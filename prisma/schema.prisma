@@ -1,0 +1,39 @@
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "esm"
+}
+
+datasource db {
+  provider = "cockroachdb"
+}
+
+model Profile {
+  id        String   @id @default(uuid())
+  fullName  String
+  title     String
+  location  String
+  email     String
+  about     String
+  skills    Skill[]
+  links     Link[]
+  updatedAt DateTime @updatedAt
+}
+
+model Skill {
+  id        String  @id @default(uuid())
+  name      String
+  category  String
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId String
+
+  @@unique([profileId, name])
+}
+
+model Link {
+  id        String  @id @default(uuid())
+  label     String
+  url       String
+  profile   Profile @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  profileId String
+}

@@ -26,6 +26,24 @@ npm run build && npm run db:seed
 npm run start:dev
 ```
 
+## Тесты
+
+```bash
+npm test
+```
+
+Встроенный `node:test`, БД не нужна:
+- `src/app.e2e.spec.ts` — поднимает приложение и проверяет GraphQL по HTTP: публичный запрос, защиту мутаций токеном, валидацию входных данных;
+- `src/profile/profile.service.spec.ts` — преобразование ошибки уникальности Prisma в `409 Conflict`.
+
+## Деплой на Render
+
+1. Создать кластер в [CockroachDB Cloud](https://cockroachlabs.cloud) (Basic, бесплатный) и скопировать connection string.
+2. В Render: **New → Blueprint**, выбрать этот репозиторий — настройки возьмутся из `render.yaml`.
+3. Указать `DATABASE_URL`; `ADMIN_TOKEN` Render сгенерирует сам (виден в Environment).
+
+Миграции и начальные данные применяются при старте контейнера.
+
 ## API
 
 ```graphql
@@ -38,7 +56,7 @@ query {
 }
 ```
 
-Мутации требуют заголовок `Authorization: Bearer <ADMIN_TOKEN>`:
+Входные данные проверяются через `class-validator` (длина полей, формат email, UUID). Мутации требуют заголовок `Authorization: Bearer <ADMIN_TOKEN>`:
 
 ```graphql
 mutation { updateProfile(input: { location: "Panama" }) { location } }

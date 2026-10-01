@@ -1,4 +1,4 @@
-import { UseGuards } from '@nestjs/common';
+import { ParseUUIDPipe, UseGuards } from '@nestjs/common';
 import { Args, ID, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { AdminGuard } from '../admin.guard.js';
 import { AddSkillInput, UpdateProfileInput } from './profile.inputs.js';
@@ -28,7 +28,7 @@ export class ProfileResolver {
 
   @UseGuards(AdminGuard)
   @Mutation(() => Boolean)
-  removeSkill(@Args('id', { type: () => ID }) id: string) {
+  removeSkill(@Args('id', { type: () => ID }, ParseUUIDPipe) id: string) {
     return this.profiles.removeSkill(id);
   }
 }

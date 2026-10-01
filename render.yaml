@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: digital-business-card
+    runtime: docker
+    plan: free
+    healthCheckPath: /
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: ADMIN_TOKEN
+        generateValue: true

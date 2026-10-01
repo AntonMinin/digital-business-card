@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { Prisma } from '../generated/prisma/client.js';
 import { PrismaService } from '../prisma.service.js';
 import { AddSkillInput, UpdateProfileInput } from './profile.inputs.js';
@@ -23,7 +23,14 @@ export class ProfileService {
 
   async addSkill(data: AddSkillInput) {
     const { id } = await this.get();
-    return this.prisma.skill.create({ data: { ...data, profileId: id } });
+    try {
+      return await this.prisma.skill.create({ data: { ...data, profileId: id } });
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') {
+        throw new ConflictException(`Skill "${data.name}" already exists`);
+      }
+      throw e;
+    }
   }
 
   async removeSkill(id: string) {

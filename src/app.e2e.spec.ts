@@ -44,6 +44,7 @@ describe('GraphQL API', () => {
 
   before(async () => {
     process.env.ADMIN_TOKEN = 'test-token';
+    process.env.NODE_ENV = 'production';
     const moduleRef = await Test.createTestingModule({ imports: [AppModule] })
       .overrideProvider(PrismaService)
       .useValue({})
@@ -62,6 +63,11 @@ describe('GraphQL API', () => {
   it('returns the profile publicly', async () => {
     const { data } = await gql('{ profile { fullName email } }');
     assert.deepEqual(data.profile, { fullName: 'Test User', email: 'test@example.com' });
+  });
+
+  it('allows introspection for GraphiQL in production', async () => {
+    const { data } = await gql('{ __schema { queryType { name } } }');
+    assert.equal(data.__schema.queryType.name, 'Query');
   });
 
   it('rejects mutations without a token', async () => {

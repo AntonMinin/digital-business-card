@@ -12,6 +12,7 @@ import { ProfileService } from './profile/profile.service.js';
       driver: ApolloDriver,
       autoSchemaFile: true,
       graphiql: true,
+      introspection: true,
       context: ({ req }: { req: unknown }) => ({ req }),
     }),
   ],

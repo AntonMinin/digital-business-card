@@ -1,3 +1,5 @@
+SET create_table_with_schema_locked = false;
+
 -- CreateTable
 CREATE TABLE "Profile" (
     "id" STRING NOT NULL,
